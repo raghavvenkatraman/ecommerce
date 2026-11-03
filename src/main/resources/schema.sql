@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS products (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(120) NOT NULL UNIQUE,
+    name VARCHAR(160) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    category VARCHAR(60) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(1000) NOT NULL,
+    badge VARCHAR(60),
+    stock INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS customer_accounts (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    password_hash VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS customer_orders (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(120) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    shipping_address VARCHAR(500) NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    product_name VARCHAR(160) NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES customer_orders (id),
+    CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products (id)
+);
